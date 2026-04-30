@@ -9,8 +9,7 @@ venv/
 # Model artifacts
 models/*.pkl
 
-# Pretrained model binaries (track registry.json only)
-pretrained_models/*.pkl
+# Pretrained model binaries are versioned for out-of-box inference
 
 # Generated outputs
 outputs/plots/*.png
