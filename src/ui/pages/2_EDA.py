@@ -14,19 +14,19 @@ from src.data.eda import (
     plot_feature_correlation,
     get_feature_stats,
 )
-from src.data.preprocess import LABEL_MAP, CLASS_NAMES
+from src.data.preprocess import LABEL_MAP, CLASS_NAMES, _normalize_label
 
-st.header("📊 Exploratory Data Analysis")
+
+st.header("Exploratory Data Analysis")
 
 if 'df' not in st.session_state:
-    st.warning("⚠️ Dataset not loaded. Please go to **Dataset** page first.")
+    st.warning("Dataset not loaded. Please go to the Dataset page first.")
     st.stop()
 
 df = st.session_state['df']
 stats = get_dataset_stats(df)
 dist = get_class_distribution(df)
 
-# --- Section 1: Class distribution ---
 st.subheader("1. Class Distribution")
 col1, col2 = st.columns(2)
 
@@ -53,29 +53,41 @@ with col2:
 
 st.divider()
 
-# --- Section 2: Feature distribution explorer ---
 st.subheader("2. Feature Distribution Explorer")
 
-numeric_cols = [c for c in df.columns if c != 'Label'
+numeric_cols = [c for c in df.columns
+                if c not in ('Label', '_label_int', '_class')
                 and pd.api.types.is_numeric_dtype(df[c])]
 selected_feature = st.selectbox("Select a feature to explore:", numeric_cols)
 
 if selected_feature:
-    # Apply label mapping for coloring
     df_plot = df.copy()
-    df_plot['_label_int'] = df_plot['Label'].map(LABEL_MAP)
+    df_plot['_label_int'] = df_plot['Label'].astype(str).apply(_normalize_label).map(LABEL_MAP)
+    df_plot = df_plot[df_plot['_label_int'].notna()]
+    df_plot['_label_int'] = df_plot['_label_int'].astype(int)
     df_plot = df_plot[df_plot['_label_int'] != -1]
-    if st.session_state.get('task', 'multiclass') == 'binary':
+
+    task = st.session_state.get('task', 'multiclass')
+    if task == 'binary':
         df_plot['_class'] = df_plot['_label_int'].apply(
             lambda x: 'Benign' if x == 0 else 'Attack'
         )
     else:
         df_plot['_class'] = df_plot['_label_int'].map(CLASS_NAMES)
 
-    # Sample for speed
-    sample = df_plot.groupby('_class').apply(
-        lambda x: x.sample(min(len(x), 5000), random_state=42)
-    ).reset_index(drop=True)
+    sample_dfs = []
+    for class_id, class_name in CLASS_NAMES.items():
+        subset = df_plot[df_plot['_label_int'] == class_id][[selected_feature, '_class']]
+        if len(subset) > 0:
+            sample_dfs.append(
+                subset.sample(min(len(subset), 5000), random_state=42)
+            )
+    if sample_dfs:
+        sample = pd.concat(sample_dfs, ignore_index=True)
+    else:
+        sample = df_plot[[selected_feature, '_class']].head(1000)
+
+    assert '_class' in sample.columns, f"_class missing, cols: {sample.columns.tolist()}"
 
     fig_hist = px.histogram(
         sample,
@@ -89,14 +101,12 @@ if selected_feature:
     )
     st.plotly_chart(fig_hist, use_container_width=True)
 
-    # Stats table
     feat_stats = get_feature_stats(df, selected_feature)
     st.markdown("**Statistics per class:**")
     st.dataframe(feat_stats, use_container_width=True, hide_index=True)
 
 st.divider()
 
-# --- Section 3: Correlation heatmap ---
 st.subheader("3. Feature Correlation Heatmap (Top 20 by Variance)")
 with st.spinner("Computing correlation matrix..."):
     corr_path = plot_feature_correlation(df, top_n=20)
@@ -104,7 +114,6 @@ st.image(str(corr_path), use_container_width=True)
 
 st.divider()
 
-# --- Section 4: Records per CSV file ---
 st.subheader("4. Records per Source File")
 if 'file_counts' in st.session_state:
     file_counts = st.session_state['file_counts']
@@ -118,12 +127,10 @@ if 'file_counts' in st.session_state:
     fig_files.update_xaxes(tickangle=20)
     st.plotly_chart(fig_files, use_container_width=True)
 else:
-    st.info("File-level counts not available. "
-            "Re-load dataset to capture per-file stats.")
+    st.info("File-level counts not available. Re-load dataset to capture per-file stats.")
 
 st.divider()
 
-# --- Section 5: Class imbalance analysis ---
 st.subheader("5. Class Imbalance Analysis")
 
 col1, col2 = st.columns(2)
@@ -168,6 +175,6 @@ st.info(f"""
 Without balancing, models learn to ignore rare attack classes.
 SMOTE generates synthetic minority samples during training.
 
-**Current setting: SMOTE is {'ON ✅' if smote_on else 'OFF ❌'}**
+**Current setting: SMOTE is {'ON' if smote_on else 'OFF'}**
 (Change in sidebar)
 """)

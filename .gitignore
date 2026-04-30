@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# Model artifacts
+models/*.pkl
+
+# Pretrained model binaries (track registry.json only)
+pretrained_models/*.pkl
+
+# Generated outputs
+outputs/plots/*.png
+outputs/reports/
+outputs/results.json
+
+# Runtime config
+config/last_run.json
+
+# Data files
+data/raw/*.csv
+data/raw/*.parquet
+
+# Archives
+*.zip
+
+# OS
+.DS_Store

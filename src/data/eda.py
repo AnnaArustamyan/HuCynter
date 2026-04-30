@@ -1,19 +1,22 @@
 from pathlib import Path
+import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-from src.data.preprocess import CLASS_NAMES, LABEL_MAP
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from src.data.preprocess import CLASS_NAMES, LABEL_MAP, _normalize_label
+
 PLOTS_DIR = PROJECT_ROOT / "outputs" / "plots"
 PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _apply_label_map(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df["Label"] = df["Label"].astype(str).str.strip().map(LABEL_MAP)
+    df["Label"] = df["Label"].astype(str).apply(_normalize_label).map(LABEL_MAP)
     df.dropna(subset=["Label"], inplace=True)
     df["Label"] = df["Label"].astype(int)
     df = df[df["Label"] != -1]
@@ -23,16 +26,27 @@ def _apply_label_map(df: pd.DataFrame) -> pd.DataFrame:
 def get_class_distribution(df: pd.DataFrame) -> dict:
     df = _apply_label_map(df)
     counts = df["Label"].value_counts()
-    return {CLASS_NAMES[label]: int(count) for label, count in counts.items() if label in CLASS_NAMES}
+    # Sorted by class number (0→5), skip classes with 0 records
+    return {
+        CLASS_NAMES[label]: int(counts.get(label, 0))
+        for label in sorted(CLASS_NAMES.keys())
+        if counts.get(label, 0) > 0
+    }
 
 
 def get_dataset_stats(df: pd.DataFrame) -> dict:
+    # Single mapping pass — never pass already-mapped df into _apply_label_map again
     df = _apply_label_map(df)
-    dist = get_class_distribution(df)
     total = len(df)
-    benign_count = dist.get("Benign", 0)
+    counts = df["Label"].value_counts()
+    benign_count = int(counts.get(0, 0))
     attack_count = total - benign_count
     n_features = len([c for c in df.columns if c != "Label"])
+    # Include all 6 classes; 0-record classes show as 0 rather than being absent
+    records_per_class = {
+        CLASS_NAMES[label]: int(counts.get(label, 0))
+        for label in sorted(CLASS_NAMES.keys())
+    }
     return {
         "total_records": total,
         "n_features": n_features,
@@ -41,7 +55,7 @@ def get_dataset_stats(df: pd.DataFrame) -> dict:
         "attack_count": attack_count,
         "benign_pct": round(benign_count / total * 100, 2) if total else 0,
         "attack_pct": round(attack_count / total * 100, 2) if total else 0,
-        "records_per_class": dist,
+        "records_per_class": records_per_class,
     }
 
 

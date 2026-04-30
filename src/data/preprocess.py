@@ -10,6 +10,19 @@ from sklearn.preprocessing import StandardScaler
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
+# Dash variants seen in CICIDS2017 CSVs across different encodings:
+# \x96 (cp1252 en-dash), \u2013 (Unicode en-dash), \u2014 (em-dash), plain hyphen
+_DASH_VARIANTS = ["\x96", "\u2013", "\u2014", "\u2012", "\u2015"]
+
+
+def _normalize_label(label: str) -> str:
+    """Strip whitespace and normalize all dash variants to a plain hyphen."""
+    label = label.strip()
+    for dash in _DASH_VARIANTS:
+        label = label.replace(dash, "-")
+    return label
+
+
 LABEL_MAP = {
     "BENIGN": 0,
     "DoS Hulk": 1,
@@ -21,9 +34,9 @@ LABEL_MAP = {
     "FTP-Patator": 3,
     "SSH-Patator": 3,
     "Bot": 4,
-    "Web Attack \x96 Brute Force": 5,
-    "Web Attack \x96 XSS": 5,
-    "Web Attack \x96 Sql Injection": 5,
+    "Web Attack - Brute Force": 5,
+    "Web Attack - XSS": 5,
+    "Web Attack - Sql Injection": 5,
     "Infiltration": -1,
     "Heartbleed": -1,
 }
@@ -40,7 +53,20 @@ CLASS_NAMES = {
 
 def preprocess(df: pd.DataFrame, task: str, use_smote: bool, sample_size) -> tuple:
     df = df.copy()
-    df["Label"] = df["Label"].astype(str).str.strip()
+
+    # Locate the label column case-insensitively (guards against whitespace-padded names)
+    print(f"[preprocess] columns: {df.columns.tolist()}")
+    label_col = next(
+        (c for c in df.columns if c.strip().lower() == "label"),
+        None,
+    )
+    if label_col is None:
+        raise ValueError(f"No 'Label' column found. Columns: {df.columns.tolist()}")
+    if label_col != "Label":
+        print(f"[preprocess] renaming '{label_col}' → 'Label'")
+        df = df.rename(columns={label_col: "Label"})
+
+    df["Label"] = df["Label"].astype(str).apply(_normalize_label)
 
     unmapped = set(df["Label"].unique()) - set(LABEL_MAP.keys())
     if unmapped:
@@ -61,19 +87,28 @@ def preprocess(df: pd.DataFrame, task: str, use_smote: bool, sample_size) -> tup
 
     if sample_size is not None:
         n_classes = y.nunique()
-        df_work = X.copy()
-        df_work["__label__"] = y.values
-        df_sampled = (
-            df_work.groupby("__label__")
-            .apply(
-                lambda x: x.sample(
-                    min(len(x), sample_size // n_classes), random_state=42
-                )
+        min_per_class = 6
+        min_sample = n_classes * min_per_class
+        if sample_size < min_sample:
+            raise ValueError(
+                f"sample_size={sample_size} is too small for {n_classes} classes. "
+                f"Minimum is {min_sample} ({min_per_class} per class)."
             )
-            .reset_index(drop=True)
+        per_class = sample_size // n_classes
+        sampled_idx = []
+        for cls in sorted(y.unique()):
+            cls_idx = y[y == cls].index
+            n_take = max(min_per_class, min(len(cls_idx), per_class))
+            sampled_idx.extend(
+                cls_idx.to_series().sample(n_take, random_state=42).index
+            )
+        X = X.loc[sampled_idx]
+        y = y.loc[sampled_idx]
+
+    if len(y) < 10:
+        raise ValueError(
+            f"Only {len(y)} samples remain after filtering/sampling — too few to split."
         )
-        y = df_sampled["__label__"]
-        X = df_sampled.drop(columns=["__label__"])
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, stratify=y, random_state=42
@@ -84,7 +119,7 @@ def preprocess(df: pd.DataFrame, task: str, use_smote: bool, sample_size) -> tup
     X_test = scaler.transform(X_test)
 
     models_dir = PROJECT_ROOT / "models"
-    models_dir.mkdir(exist_ok=True)
+    models_dir.mkdir(parents=True, exist_ok=True)
     joblib.dump(scaler, models_dir / "scaler.pkl")
 
     if use_smote:

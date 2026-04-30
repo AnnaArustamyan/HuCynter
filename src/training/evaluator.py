@@ -1,4 +1,8 @@
 from pathlib import Path
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_PROJECT_ROOT))
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -23,6 +27,13 @@ PLOTS_DIR = PROJECT_ROOT / "outputs" / "plots"
 PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _get_labels_for_task(task: str):
+    """Canonical ordered labels so confusion matrices always have a fixed shape."""
+    if task == "binary":
+        return [0, 1]
+    return sorted(CLASS_NAMES.keys())
+
+
 def evaluate(
     model,
     X_test,
@@ -32,13 +43,16 @@ def evaluate(
     task: str,
 ) -> dict:
     y_pred = model.predict(X_test)
+    all_labels = _get_labels_for_task(task)
 
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, average="macro", zero_division=0)
     recall = recall_score(y_test, y_pred, average="macro", zero_division=0)
     f1 = f1_score(y_test, y_pred, average="macro", zero_division=0)
-    report = classification_report(y_test, y_pred, zero_division=0)
-    cm = confusion_matrix(y_test, y_pred)
+    report = classification_report(
+        y_test, y_pred, labels=all_labels, zero_division=0,
+    )
+    cm = confusion_matrix(y_test, y_pred, labels=all_labels)
 
     roc_auc = None
     if task == "binary" and hasattr(model, "predict_proba"):
@@ -86,7 +100,9 @@ def _plot_confusion_matrix(cm, model_name, task, accuracy) -> Path:
     else:
         labels = [CLASS_NAMES[i] for i in sorted(CLASS_NAMES.keys())]
 
-    cm_norm = cm / cm.sum(axis=1, keepdims=True)
+    row_sums = cm.sum(axis=1, keepdims=True).astype(float)
+    row_sums[row_sums == 0] = 1.0
+    cm_norm = cm / row_sums
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax1,
@@ -134,18 +150,25 @@ def _plot_roc_multiclass(model, X_test, y_test, model_name) -> Path:
 
     classes = sorted(CLASS_NAMES.keys())
     y_test_bin = label_binarize(y_test, classes=classes)
-    y_score = model.predict_proba(X_test)
-    colors = plt.cm.tab10(range(len(CLASS_NAMES)))
+    y_score_raw = model.predict_proba(X_test)
+
+    # Align probability columns with canonical class order.
+    # model.classes_ may be a subset or differently ordered.
+    model_classes = list(model.classes_) if hasattr(model, "classes_") else classes
+    y_score = np.zeros((len(y_test), len(classes)))
+    for j, cls in enumerate(classes):
+        if cls in model_classes:
+            y_score[:, j] = y_score_raw[:, model_classes.index(cls)]
+
+    colors_arr = plt.cm.tab10(range(len(classes)))
 
     fig, ax = plt.subplots(figsize=(10, 7))
     for i, cls in enumerate(classes):
         if y_test_bin[:, i].sum() == 0:
             continue
-        if i >= y_score.shape[1]:
-            continue
         fpr, tpr, _ = roc_curve(y_test_bin[:, i], y_score[:, i])
         auc_val = auc(fpr, tpr)
-        ax.plot(fpr, tpr, color=colors[i],
+        ax.plot(fpr, tpr, color=colors_arr[i],
                 label=f"{CLASS_NAMES[cls]} (AUC={auc_val:.3f})")
 
     ax.plot([0, 1], [0, 1], "k--")

@@ -1,0 +1,92 @@
+[
+  {
+    "model_id": "decision_tree_multiclass",
+    "display_name": "Decision Tree (Multiclass, 200K)",
+    "task": "multiclass",
+    "model_path": "decision_tree_multiclass.pkl",
+    "scaler_path": "scaler.pkl",
+    "feature_names_path": "feature_names.json",
+    "class_names": {
+      "0": "Benign",
+      "1": "DoS/DDoS",
+      "2": "Reconnaissance",
+      "3": "Brute Force",
+      "4": "Botnet",
+      "5": "Web Attack"
+    },
+    "version": "1.0",
+    "notes": "Accuracy: 0.9921, F1: 0.9856. Trained on 200K sample with SMOTE."
+  },
+  {
+    "model_id": "random_forest_multiclass",
+    "display_name": "Random Forest (Multiclass, 200K)",
+    "task": "multiclass",
+    "model_path": "random_forest_multiclass.pkl",
+    "scaler_path": "scaler.pkl",
+    "feature_names_path": "feature_names.json",
+    "class_names": {
+      "0": "Benign",
+      "1": "DoS/DDoS",
+      "2": "Reconnaissance",
+      "3": "Brute Force",
+      "4": "Botnet",
+      "5": "Web Attack"
+    },
+    "version": "1.0",
+    "notes": "Accuracy: 0.9964, F1: 0.9876. Trained on 200K sample with SMOTE."
+  },
+  {
+    "model_id": "xgboost_multiclass",
+    "display_name": "XGBoost (Multiclass, 200K)",
+    "task": "multiclass",
+    "model_path": "xgboost_multiclass.pkl",
+    "scaler_path": "scaler.pkl",
+    "feature_names_path": "feature_names.json",
+    "class_names": {
+      "0": "Benign",
+      "1": "DoS/DDoS",
+      "2": "Reconnaissance",
+      "3": "Brute Force",
+      "4": "Botnet",
+      "5": "Web Attack"
+    },
+    "version": "1.0",
+    "notes": "Accuracy: 0.9983, F1: 0.9949. Trained on 200K sample with SMOTE. Best accuracy."
+  },
+  {
+    "model_id": "lightgbm_multiclass",
+    "display_name": "LightGBM (Multiclass, 200K)",
+    "task": "multiclass",
+    "model_path": "lightgbm_multiclass.pkl",
+    "scaler_path": "scaler.pkl",
+    "feature_names_path": "feature_names.json",
+    "class_names": {
+      "0": "Benign",
+      "1": "DoS/DDoS",
+      "2": "Reconnaissance",
+      "3": "Brute Force",
+      "4": "Botnet",
+      "5": "Web Attack"
+    },
+    "version": "1.0",
+    "notes": "Accuracy: 0.9985, F1: 0.9952. Trained on 200K sample with SMOTE. Best F1 score."
+  },
+  {
+    "model_id": "neural_network_multiclass",
+    "display_name": "Neural Network (Multiclass, 200K)",
+    "task": "multiclass",
+    "model_path": "neural_network_multiclass.pkl",
+    "scaler_path": "scaler.pkl",
+    "feature_names_path": "feature_names.json",
+    "class_names": {
+      "0": "Benign",
+      "1": "DoS/DDoS",
+      "2": "Reconnaissance",
+      "3": "Brute Force",
+      "4": "Botnet",
+      "5": "Web Attack"
+    },
+    "version": "1.0",
+    "notes": "Accuracy: 0.9905, F1: 0.9688. MLPClassifier (128,64) with early stopping. Trained on 200K sample with SMOTE."
+  }
+]

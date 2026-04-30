@@ -20,16 +20,28 @@ def load_dataset(data_dir: Path) -> pd.DataFrame:
         if all(parquet_mtime > f.stat().st_mtime for f in csv_files):
             return pd.read_parquet(parquet_path)
 
+    # Delete stale parquet so it gets rebuilt cleanly
+    if parquet_path.exists():
+        parquet_path.unlink()
+
     dfs = []
     for csv_file in tqdm(csv_files, desc="Loading CSV files"):
         tqdm.write(f"  {csv_file.name}")
-        df = pd.read_csv(csv_file, encoding="cp1252", low_memory=False)
+        df = pd.read_csv(csv_file, encoding="latin-1", low_memory=False)
         df.columns = df.columns.str.strip()
         if "Label" in df.columns:
-            df["Label"] = df["Label"].astype(str).str.strip()
+            df["Label"] = (
+                df["Label"]
+                .astype(str)
+                .str.replace("ï¿½", "-", regex=False)
+                .str.strip()
+            )
         dfs.append(df)
 
     df = pd.concat(dfs, ignore_index=True)
+
+    # Ensure column names are clean before saving (strip any residual whitespace)
+    df.columns = df.columns.str.strip()
 
     df.drop_duplicates(inplace=True)
 

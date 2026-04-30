@@ -1,10 +1,14 @@
 import importlib
 import json
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
 
 import joblib
+
+_PROJECT_ROOT_INIT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_PROJECT_ROOT_INIT))
 
 from src.data import loader
 from src.data.preprocess import preprocess
@@ -21,6 +25,7 @@ MODEL_MODULES = {
     "random_forest": "src.models.random_forest",
     "xgboost": "src.models.xgboost_model",
     "lightgbm": "src.models.lightgbm_model",
+    "neural_network": "src.models.neural_network",
 }
 
 MODEL_DISPLAY_NAMES = {
@@ -29,7 +34,15 @@ MODEL_DISPLAY_NAMES = {
     "random_forest": "Random Forest",
     "xgboost": "XGBoost",
     "lightgbm": "LightGBM",
+    "neural_network": "Neural Network",
 }
+
+ENSEMBLE_DISPLAY_NAMES = {
+    "soft_voting": "Soft Voting Ensemble",
+    "stacking": "Stacking Ensemble",
+}
+
+MIN_ENSEMBLE_BASE_MODELS = 3
 
 
 def load_results() -> list:
@@ -66,14 +79,14 @@ def train_model(
     df = loader.load_dataset(PROJECT_ROOT / "data" / "raw")
 
     _cb("Preprocessing", 0.15)
-    params_for_model = hyperparams.copy()
-    params_for_model["task"] = task
+    module = importlib.import_module(MODEL_MODULES[model_name])
+    defaults = module.get_default_hyperparams() if hasattr(module, "get_default_hyperparams") else {}
+    params_for_model = {**defaults, **hyperparams, "task": task}
     X_train, X_test, y_train, y_test, feature_names = preprocess(
         df, task, use_smote, sample_size
     )
 
     _cb("Instantiating model", 0.25)
-    module = importlib.import_module(MODEL_MODULES[model_name])
     model = module.get_model(params_for_model)
 
     _cb("Training", 0.30)
@@ -114,3 +127,77 @@ def train_model(
     save_result(result)
     _cb("Done", 1.0)
     return result
+
+
+def train_ensembles(
+    base_model_keys: list[str],
+    task: str,
+    use_smote: bool,
+    sample_size,
+    progress_callback=None,
+) -> list[dict]:
+    """Train Soft Voting + Stacking ensembles from already-saved base models.
+
+    Returns a list of result dicts (one per ensemble).
+    Raises ValueError if fewer than MIN_ENSEMBLE_BASE_MODELS base models
+    have .pkl files on disk.
+    """
+    from src.models.ensemble import train_and_evaluate_ensembles
+
+    def _cb(step, pct):
+        if progress_callback is not None:
+            progress_callback(step, pct)
+
+    _cb("Loading base models", 0.05)
+    trained_models = []
+    loaded_keys = []
+    for key in base_model_keys:
+        pkl = MODELS_DIR / f"{key}_{task}.pkl"
+        if pkl.is_file():
+            trained_models.append(joblib.load(pkl))
+            loaded_keys.append(key)
+
+    if len(trained_models) < MIN_ENSEMBLE_BASE_MODELS:
+        raise ValueError(
+            f"Ensemble requires at least {MIN_ENSEMBLE_BASE_MODELS} trained base "
+            f"models on disk, but only found {len(trained_models)} "
+            f"({', '.join(loaded_keys) or 'none'})."
+        )
+
+    _cb("Preprocessing", 0.15)
+    df = loader.load_dataset(PROJECT_ROOT / "data" / "raw")
+    X_train, X_test, y_train, y_test, feature_names = preprocess(
+        df, task, use_smote, sample_size
+    )
+
+    _cb("Training ensembles", 0.30)
+    ens_results = train_and_evaluate_ensembles(
+        X_train, X_test, y_train, y_test,
+        trained_models, feature_names, loaded_keys, task,
+        progress_callback=_cb,
+    )
+
+    saved = []
+    for key, er in ens_results.items():
+        _cb(f"Saving {ENSEMBLE_DISPLAY_NAMES.get(key, key)}", 0.85)
+        model_obj = er.pop("_model", None)
+        if model_obj is not None:
+            joblib.dump(model_obj, MODELS_DIR / f"{key}_{task}.pkl")
+
+        result = {
+            **er,
+            "model_key": key,
+            "task": task,
+            "timestamp": datetime.now().isoformat(),
+            "hyperparams": {},
+            "use_smote": use_smote,
+            "sample_size": sample_size,
+            "roc_auc": None,
+            "classification_report": "",
+            "feature_importances": None,
+        }
+        save_result(result)
+        saved.append(result)
+
+    _cb("Done", 1.0)
+    return saved
