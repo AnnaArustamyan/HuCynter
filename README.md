@@ -11,14 +11,14 @@ Results from a 200K stratified sample, multiclass task, with SMOTE oversampling:
 
 | Model | Type | Accuracy | Precision | Recall | F1 (macro) | Training Time |
 |---|---|---|---|---|---|---|
-| Logistic Regression | Linear | 0.9569 | 0.8542 | 0.9666 | 0.8938 | 22.6s |
-| Decision Tree | Tree | 0.9921 | 0.9789 | 0.9929 | 0.9856 | 2.9s |
-| Random Forest | Ensemble | 0.9964 | 0.9817 | 0.9941 | 0.9876 | 3.9s |
-| XGBoost | Gradient Boosting | 0.9983 | 0.9931 | 0.9968 | 0.9949 | 3.7s |
-| **LightGBM** | Gradient Boosting | **0.9985** | 0.9940 | 0.9965 | 0.9952 | 11.5s |
-| Neural Network | MLP | 0.9905 | 0.9530 | 0.9870 | 0.9688 | 32.8s |
-| Soft Voting Ensemble | Ensemble (voting) | 0.9976 | 0.9890 | 0.9956 | 0.9922 | 77.2s |
-| **Stacking Ensemble** | Ensemble (stacking) | **0.9985** | **0.9952** | 0.9961 | **0.9956** | 2020.6s |
+| Logistic Regression | Linear | 0.8682 | 0.4871 | 0.9640 | 0.5386 | 186.0s |
+| Decision Tree | Tree | 0.9862 | 0.7118 | 0.9726 | 0.7622 | 19.2s |
+| Random Forest | Ensemble | 0.9943 | 0.8504 | 0.9896 | 0.8700 | 28.3s |
+| XGBoost | Gradient Boosting | 0.9979 | 0.9137 | 0.9867 | 0.9382 | 12.7s |
+| **LightGBM** | Gradient Boosting | **0.9981** | **0.9236** | 0.9760 | **0.9430** | 29.4s |
+| Neural Network | MLP | 0.9873 | 0.7135 | 0.9792 | 0.7606 | 122.0s |
+| Soft Voting Ensemble | Ensemble (voting) | 0.9967 | 0.8790 | **0.9919** | 0.9041 | 1049.7s |
+| Stacking Ensemble | Ensemble (stacking) | 0.9980 | 0.9164 | 0.9867 | 0.9401 | 5171.8s |
 
 ---
 

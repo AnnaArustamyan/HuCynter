@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-04T15:36:13.105382",
+  "generated_at": "2026-05-04T21:35:43.826755",
   "command": "python train_all.py --task multiclass --sample 200000 --ensemble",
   "dataset": {
     "name": "CICIDS2017",
@@ -151,23 +151,23 @@
       "Idle Min"
     ],
     "train_rows_before_smote": 160000,
-    "train_rows_after_smote": 159996,
-    "test_rows": 22650,
+    "train_rows_after_smote": 797928,
+    "test_rows": 40000,
     "train_class_counts_after_smote": {
-      "Benign": 26666,
-      "DoS/DDoS": 26666,
-      "Reconnaissance": 26666,
-      "Brute Force": 26666,
-      "Botnet": 26666,
-      "Web Attack": 26666
+      "Benign": 132988,
+      "DoS/DDoS": 132988,
+      "Reconnaissance": 132988,
+      "Brute Force": 132988,
+      "Botnet": 132988,
+      "Web Attack": 132988
     },
     "test_class_counts": {
-      "Benign": 6667,
-      "DoS/DDoS": 6667,
-      "Reconnaissance": 6667,
-      "Brute Force": 1830,
-      "Botnet": 390,
-      "Web Attack": 429
+      "Benign": 33247,
+      "DoS/DDoS": 5103,
+      "Reconnaissance": 1440,
+      "Brute Force": 145,
+      "Botnet": 31,
+      "Web Attack": 34
     }
   },
   "models": [
@@ -175,12 +175,12 @@
       "model_name": "Logistic Regression",
       "model_key": "logistic_regression",
       "task": "multiclass",
-      "accuracy": 0.9569094922737307,
-      "precision_macro": 0.8541529335343062,
-      "recall_macro": 0.9665946144016503,
-      "f1_macro": 0.8937970712057829,
+      "accuracy": 0.868225,
+      "precision_macro": 0.4870945271311716,
+      "recall_macro": 0.9640296115298823,
+      "f1_macro": 0.5386159153227625,
       "roc_auc": null,
-      "training_time_seconds": 22.6,
+      "training_time_seconds": 186.01,
       "hyperparams": {
         "C": 1.0,
         "max_iter": 1000,
@@ -188,68 +188,68 @@
       },
       "confusion_matrix": [
         [
-          5851,
-          217,
-          123,
-          28,
-          317,
-          131
+          28018,
+          1125,
+          496,
+          300,
+          2338,
+          970
         ],
         [
-          20,
-          6613,
-          1,
-          0,
-          7,
-          26
-        ],
-        [
+          22,
+          5067,
+          4,
+          4,
           6,
-          15,
-          6638,
-          7,
-          0,
-          1
-        ],
-        [
-          0,
-          7,
-          0,
-          1765,
-          0,
-          58
-        ],
-        [
-          9,
-          0,
-          0,
-          0,
-          381,
           0
         ],
         [
           1,
-          2,
+          0,
+          1438,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          142,
+          0,
+          0
+        ],
+        [
           0,
           0,
           0,
-          426
+          0,
+          31,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          33
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       0.99      0.88      0.93      6667\n           1       0.96      0.99      0.98      6667\n           2       0.98      1.00      0.99      6667\n           3       0.98      0.96      0.97      1830\n           4       0.54      0.98      0.70       390\n           5       0.66      0.99      0.80       429\n\n    accuracy                           0.96     22650\n   macro avg       0.85      0.97      0.89     22650\nweighted avg       0.97      0.96      0.96     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.84      0.91     33247\n           1       0.82      0.99      0.90      5103\n           2       0.74      1.00      0.85      1440\n           3       0.32      0.98      0.48       145\n           4       0.01      1.00      0.03        31\n           5       0.03      0.97      0.06        34\n\n    accuracy                           0.87     40000\n   macro avg       0.49      0.96      0.54     40000\nweighted avg       0.96      0.87      0.91     40000\n",
       "feature_importances_top20": null,
-      "timestamp": "2026-05-04T14:41:56.077983"
+      "timestamp": "2026-05-04T19:16:04.198909"
     },
     {
       "model_name": "Decision Tree",
       "model_key": "decision_tree",
       "task": "multiclass",
-      "accuracy": 0.9920971302428256,
-      "precision_macro": 0.9789250708714426,
-      "recall_macro": 0.9929418622308978,
-      "f1_macro": 0.9855879385833921,
+      "accuracy": 0.986225,
+      "precision_macro": 0.7117859104628845,
+      "recall_macro": 0.9725823876060157,
+      "f1_macro": 0.76215555819521,
       "roc_auc": null,
-      "training_time_seconds": 2.93,
+      "training_time_seconds": 19.16,
       "hyperparams": {
         "max_depth": 10,
         "min_samples_split": 2,
@@ -257,35 +257,43 @@
       },
       "confusion_matrix": [
         [
-          6557,
-          57,
-          6,
+          32730,
+          199,
+          24,
+          16,
+          230,
+          48
+        ],
+        [
           3,
-          39,
+          5082,
+          0,
+          0,
+          0,
+          18
+        ],
+        [
+          2,
+          0,
+          1433,
+          0,
+          0,
           5
         ],
         [
-          51,
-          6612,
-          4,
+          2,
           0,
+          0,
+          143,
           0,
           0
         ],
         [
-          0,
-          6,
-          6660,
-          0,
-          0,
-          1
-        ],
-        [
+          3,
           0,
           0,
           0,
-          1830,
-          0,
+          28,
           0
         ],
         [
@@ -293,53 +301,45 @@
           0,
           0,
           0,
-          389,
-          0
-        ],
-        [
-          6,
           0,
-          0,
-          0,
-          0,
-          423
+          33
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       0.99      0.98      0.99      6667\n           1       0.99      0.99      0.99      6667\n           2       1.00      1.00      1.00      6667\n           3       1.00      1.00      1.00      1830\n           4       0.91      1.00      0.95       390\n           5       0.99      0.99      0.99       429\n\n    accuracy                           0.99     22650\n   macro avg       0.98      0.99      0.99     22650\nweighted avg       0.99      0.99      0.99     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.98      0.99     33247\n           1       0.96      1.00      0.98      5103\n           2       0.98      1.00      0.99      1440\n           3       0.90      0.99      0.94       145\n           4       0.11      0.90      0.19        31\n           5       0.32      0.97      0.48        34\n\n    accuracy                           0.99     40000\n   macro avg       0.71      0.97      0.76     40000\nweighted avg       0.99      0.99      0.99     40000\n",
       "feature_importances_top20": {
-        "Destination Port": 0.373041988208564,
-        "Init_Win_bytes_backward": 0.17911241127569866,
-        "Average Packet Size": 0.15194477761584835,
-        "Bwd Packet Length Std": 0.09107044105201928,
-        "Flow Bytes/s": 0.07634157148935411,
-        "Bwd IAT Min": 0.034675232496587244,
-        "Fwd IAT Total": 0.01974926540781677,
-        "min_seg_size_forward": 0.016296786106074528,
-        "Bwd Packet Length Min": 0.014300500250504422,
-        "Total Length of Fwd Packets": 0.008632280789292292,
-        "Fwd Packet Length Mean": 0.005699366567702682,
-        "Fwd IAT Min": 0.005171122148401025,
-        "Init_Win_bytes_forward": 0.005084343323460558,
-        "Bwd Packets/s": 0.0035859263678855264,
-        "Flow IAT Max": 0.0033744595453391434,
-        "Subflow Fwd Packets": 0.002542343396337608,
-        "Avg Bwd Segment Size": 0.002167681935893408,
-        "Packet Length Mean": 0.001022690533945496,
-        "Bwd Header Length": 0.0008117711403949486,
-        "Flow IAT Min": 0.000720911564889809
+        "Destination Port": 0.4367334837952929,
+        "Init_Win_bytes_backward": 0.25890324105515167,
+        "Bwd Packet Length Min": 0.0905808343946308,
+        "Subflow Fwd Packets": 0.07673463473951186,
+        "Bwd IAT Min": 0.03099888149595966,
+        "Packet Length Mean": 0.02287625456662538,
+        "Flow Bytes/s": 0.020803423711838954,
+        "min_seg_size_forward": 0.016242441545155466,
+        "Init_Win_bytes_forward": 0.009424930704234882,
+        "PSH Flag Count": 0.007158899866761015,
+        "Flow IAT Std": 0.004593497126119706,
+        "Fwd Packet Length Max": 0.0039445187626384005,
+        "Flow IAT Max": 0.003899278561333352,
+        "Fwd IAT Min": 0.002885388857851452,
+        "Flow IAT Min": 0.0026304051428995856,
+        "Fwd Packet Length Std": 0.0022046738398024484,
+        "Fwd Header Length": 0.0018851035089821448,
+        "Subflow Bwd Packets": 0.0018126968534477909,
+        "Bwd IAT Std": 0.0014041325213542896,
+        "Bwd Packets/s": 0.0006175792219892212
       },
-      "timestamp": "2026-05-04T14:42:06.656769"
+      "timestamp": "2026-05-04T19:16:31.731459"
     },
     {
       "model_name": "Random Forest",
       "model_key": "random_forest",
       "task": "multiclass",
-      "accuracy": 0.9963796909492274,
-      "precision_macro": 0.9817433299566153,
-      "recall_macro": 0.9940663841315939,
-      "f1_macro": 0.987610765731117,
+      "accuracy": 0.994325,
+      "precision_macro": 0.8503788227489396,
+      "recall_macro": 0.9896424963887087,
+      "f1_macro": 0.869970340603719,
       "roc_auc": null,
-      "training_time_seconds": 3.87,
+      "training_time_seconds": 28.29,
       "hyperparams": {
         "n_estimators": 100,
         "max_depth": 15,
@@ -347,89 +347,89 @@
       },
       "confusion_matrix": [
         [
-          6611,
-          11,
-          3,
-          1,
-          38,
-          3
-        ],
-        [
-          8,
-          6658,
+          33033,
+          22,
+          20,
           0,
-          0,
-          0,
+          171,
           1
         ],
         [
-          0,
-          4,
-          6662,
-          0,
-          0,
-          1
-        ],
-        [
-          1,
-          0,
-          0,
-          1828,
-          0,
-          1
-        ],
-        [
-          3,
+          7,
+          5096,
           0,
           0,
           0,
-          387,
           0
         ],
         [
-          6,
+          2,
+          0,
+          1438,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          142,
+          0,
+          0
+        ],
+        [
           1,
           0,
           0,
           0,
-          422
+          30,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          34
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.99      0.99      6667\n           1       1.00      1.00      1.00      6667\n           2       1.00      1.00      1.00      6667\n           3       1.00      1.00      1.00      1830\n           4       0.91      0.99      0.95       390\n           5       0.99      0.98      0.98       429\n\n    accuracy                           1.00     22650\n   macro avg       0.98      0.99      0.99     22650\nweighted avg       1.00      1.00      1.00     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.99      1.00     33247\n           1       1.00      1.00      1.00      5103\n           2       0.99      1.00      0.99      1440\n           3       1.00      0.98      0.99       145\n           4       0.15      0.97      0.26        31\n           5       0.97      1.00      0.99        34\n\n    accuracy                           0.99     40000\n   macro avg       0.85      0.99      0.87     40000\nweighted avg       1.00      0.99      1.00     40000\n",
       "feature_importances_top20": {
-        "Destination Port": 0.08814476062189532,
-        "Init_Win_bytes_backward": 0.05706509273296685,
-        "Average Packet Size": 0.04938795897813876,
-        "Avg Bwd Segment Size": 0.041265608701407976,
-        "Bwd Packet Length Mean": 0.0372062888078364,
-        "Bwd Packet Length Max": 0.03341647721616633,
-        "Max Packet Length": 0.03044910400446847,
-        "Total Length of Fwd Packets": 0.02889116146267264,
-        "Packet Length Mean": 0.02585490296473723,
-        "Bwd Packet Length Std": 0.02507407056173379,
-        "Avg Fwd Segment Size": 0.02359097978171168,
-        "Subflow Fwd Bytes": 0.023522291555836256,
-        "Fwd Packet Length Mean": 0.023200866339887827,
-        "Bwd Header Length": 0.023190299286947994,
-        "Fwd Packet Length Max": 0.02208921803994499,
-        "Total Length of Bwd Packets": 0.021479125098052162,
-        "Total Backward Packets": 0.020651507473632893,
-        "Packet Length Variance": 0.020161563874915106,
-        "Subflow Bwd Bytes": 0.020119722718474266,
-        "Init_Win_bytes_forward": 0.019071938626833252
+        "Destination Port": 0.09477148288046922,
+        "Init_Win_bytes_backward": 0.05936001898385231,
+        "Average Packet Size": 0.05595833582622379,
+        "Avg Bwd Segment Size": 0.04397743796546631,
+        "Bwd Packet Length Mean": 0.03790462898133443,
+        "Max Packet Length": 0.03723766040618186,
+        "Bwd Packet Length Max": 0.031976192695699686,
+        "Total Length of Fwd Packets": 0.029451999549151727,
+        "Fwd Packet Length Mean": 0.02905125714261558,
+        "Subflow Fwd Bytes": 0.02834053187229073,
+        "Packet Length Mean": 0.02661785118678389,
+        "Bwd Packet Length Std": 0.023514050162657535,
+        "Packet Length Std": 0.020638599236236472,
+        "Bwd Header Length": 0.019738716942600584,
+        "Total Length of Bwd Packets": 0.019125010813432566,
+        "min_seg_size_forward": 0.019097936395793623,
+        "Flow IAT Mean": 0.017970829216038847,
+        "Init_Win_bytes_forward": 0.01796909319534465,
+        "Fwd Packet Length Max": 0.017934413599566698,
+        "Subflow Bwd Bytes": 0.0176822332691284
       },
-      "timestamp": "2026-05-04T14:42:17.001153"
+      "timestamp": "2026-05-04T19:17:08.388201"
     },
     {
       "model_name": "XGBoost",
       "model_key": "xgboost",
       "task": "multiclass",
-      "accuracy": 0.9982781456953642,
-      "precision_macro": 0.9930995476199725,
-      "recall_macro": 0.9967663388392353,
-      "f1_macro": 0.9949061841010615,
+      "accuracy": 0.99785,
+      "precision_macro": 0.9136581155597945,
+      "recall_macro": 0.9867350292975429,
+      "f1_macro": 0.9382433560769606,
       "roc_auc": null,
-      "training_time_seconds": 3.66,
+      "training_time_seconds": 12.65,
       "hyperparams": {
         "n_estimators": 100,
         "max_depth": 6,
@@ -438,34 +438,26 @@
       },
       "confusion_matrix": [
         [
-          6643,
-          6,
-          3,
+          33169,
+          28,
+          20,
+          1,
+          29,
+          0
+        ],
+        [
           2,
-          12,
-          1
+          5101,
+          0,
+          0,
+          0,
+          0
         ],
         [
-          3,
-          6663,
+          2,
           0,
+          1438,
           0,
-          0,
-          1
-        ],
-        [
-          0,
-          4,
-          6662,
-          0,
-          0,
-          1
-        ],
-        [
-          0,
-          0,
-          0,
-          1830,
           0,
           0
         ],
@@ -473,54 +465,62 @@
           2,
           0,
           0,
+          143,
           0,
-          388,
           0
         ],
         [
-          4,
+          1,
           0,
           0,
           0,
+          30,
+          0
+        ],
+        [
           0,
-          425
+          1,
+          0,
+          0,
+          0,
+          33
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      1.00      1.00      6667\n           1       1.00      1.00      1.00      6667\n           2       1.00      1.00      1.00      6667\n           3       1.00      1.00      1.00      1830\n           4       0.97      0.99      0.98       390\n           5       0.99      0.99      0.99       429\n\n    accuracy                           1.00     22650\n   macro avg       0.99      1.00      0.99     22650\nweighted avg       1.00      1.00      1.00     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      1.00      1.00     33247\n           1       0.99      1.00      1.00      5103\n           2       0.99      1.00      0.99      1440\n           3       0.99      0.99      0.99       145\n           4       0.51      0.97      0.67        31\n           5       1.00      0.97      0.99        34\n\n    accuracy                           1.00     40000\n   macro avg       0.91      0.99      0.94     40000\nweighted avg       1.00      1.00      1.00     40000\n",
       "feature_importances_top20": {
-        "Active Max": 0.14843951165676117,
-        "Max Packet Length": 0.1260799765586853,
-        "Bwd Packet Length Min": 0.1203107014298439,
-        "PSH Flag Count": 0.11059121787548065,
-        "Bwd Packet Length Std": 0.10899663716554642,
-        "Flow Duration": 0.07991603761911392,
-        "Destination Port": 0.05342605710029602,
-        "Total Fwd Packets": 0.03489881753921509,
-        "Init_Win_bytes_backward": 0.029180794954299927,
-        "Bwd Packets/s": 0.02775764651596546,
-        "min_seg_size_forward": 0.01599906012415886,
-        "Fwd Header Length": 0.015324312262237072,
-        "Fwd Packet Length Std": 0.011308139190077782,
-        "FIN Flag Count": 0.010603495873510838,
-        "Packet Length Mean": 0.00858442671597004,
-        "ACK Flag Count": 0.007540909107774496,
-        "Packet Length Std": 0.006854775361716747,
-        "Fwd IAT Std": 0.006641454063355923,
-        "Bwd IAT Min": 0.005271179601550102,
-        "Fwd IAT Max": 0.005110438447445631
+        "Bwd Packet Length Std": 0.13911911845207214,
+        "Active Max": 0.11943002790212631,
+        "Flow Duration": 0.10691509395837784,
+        "PSH Flag Count": 0.10256476700305939,
+        "Bwd Packet Length Min": 0.09717616438865662,
+        "Destination Port": 0.06467133015394211,
+        "Init_Win_bytes_backward": 0.0628201812505722,
+        "Bwd Packets/s": 0.03517051041126251,
+        "Fwd Packet Length Std": 0.029118482023477554,
+        "Packet Length Mean": 0.02581818588078022,
+        "min_seg_size_forward": 0.0231504887342453,
+        "Total Fwd Packets": 0.02033694088459015,
+        "Packet Length Std": 0.01514722965657711,
+        "Fwd IAT Std": 0.013682896271348,
+        "Fwd Header Length": 0.013433274812996387,
+        "Bwd IAT Min": 0.012454982846975327,
+        "FIN Flag Count": 0.01236102543771267,
+        "Max Packet Length": 0.009219528175890446,
+        "ACK Flag Count": 0.008361410349607468,
+        "Fwd IAT Max": 0.0073144156485795975
       },
-      "timestamp": "2026-05-04T14:42:27.138288"
+      "timestamp": "2026-05-04T19:17:28.828237"
     },
     {
       "model_name": "LightGBM",
       "model_key": "lightgbm",
       "task": "multiclass",
-      "accuracy": 0.9984988962472406,
-      "precision_macro": 0.9940220458831804,
-      "recall_macro": 0.9964889809122598,
-      "f1_macro": 0.9952374145886251,
+      "accuracy": 0.998125,
+      "precision_macro": 0.9235547490336516,
+      "recall_macro": 0.9760475099126585,
+      "f1_macro": 0.9430401504799532,
       "roc_auc": null,
-      "training_time_seconds": 11.54,
+      "training_time_seconds": 29.38,
       "hyperparams": {
         "n_estimators": 100,
         "max_depth": 7,
@@ -529,89 +529,89 @@
       },
       "confusion_matrix": [
         [
-          6646,
-          6,
+          33182,
+          23,
+          20,
+          0,
+          22,
+          0
+        ],
+        [
+          2,
+          5101,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          1438,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          143,
+          0,
+          0
+        ],
+        [
           3,
+          0,
+          0,
+          0,
+          28,
+          0
+        ],
+        [
+          0,
           1,
-          11,
-          0
-        ],
-        [
-          0,
-          6666,
           0,
           0,
           0,
-          1
-        ],
-        [
-          0,
-          4,
-          6662,
-          0,
-          0,
-          1
-        ],
-        [
-          0,
-          0,
-          0,
-          1830,
-          0,
-          0
-        ],
-        [
-          3,
-          0,
-          0,
-          0,
-          387,
-          0
-        ],
-        [
-          3,
-          1,
-          0,
-          0,
-          0,
-          425
+          33
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      1.00      1.00      6667\n           1       1.00      1.00      1.00      6667\n           2       1.00      1.00      1.00      6667\n           3       1.00      1.00      1.00      1830\n           4       0.97      0.99      0.98       390\n           5       1.00      0.99      0.99       429\n\n    accuracy                           1.00     22650\n   macro avg       0.99      1.00      1.00     22650\nweighted avg       1.00      1.00      1.00     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      1.00      1.00     33247\n           1       1.00      1.00      1.00      5103\n           2       0.99      1.00      0.99      1440\n           3       1.00      0.99      0.99       145\n           4       0.56      0.90      0.69        31\n           5       1.00      0.97      0.99        34\n\n    accuracy                           1.00     40000\n   macro avg       0.92      0.98      0.94     40000\nweighted avg       1.00      1.00      1.00     40000\n",
       "feature_importances_top20": {
-        "Destination Port": 5025.0,
-        "Init_Win_bytes_backward": 3097.0,
-        "Init_Win_bytes_forward": 2540.0,
-        "Flow IAT Min": 2376.0,
-        "Fwd IAT Min": 1515.0,
-        "Flow Duration": 1449.0,
-        "Flow Bytes/s": 1399.0,
-        "Bwd Packets/s": 1083.0,
-        "Fwd Header Length": 974.0,
-        "Total Length of Fwd Packets": 884.0,
-        "Bwd IAT Min": 859.0,
-        "Fwd IAT Total": 670.0,
-        "Fwd Packets/s": 640.0,
-        "Total Fwd Packets": 637.0,
-        "Bwd Packet Length Std": 636.0,
-        "Fwd IAT Std": 616.0,
-        "min_seg_size_forward": 602.0,
-        "Fwd Packet Length Std": 567.0,
-        "Total Length of Bwd Packets": 548.0,
-        "Flow Packets/s": 543.0
+        "Destination Port": 5470.0,
+        "Init_Win_bytes_forward": 3187.0,
+        "Init_Win_bytes_backward": 3123.0,
+        "Flow IAT Min": 2304.0,
+        "Flow Duration": 1226.0,
+        "Fwd IAT Min": 1191.0,
+        "Flow Bytes/s": 1142.0,
+        "Bwd Packets/s": 1118.0,
+        "Fwd Header Length": 948.0,
+        "Total Length of Bwd Packets": 915.0,
+        "Total Length of Fwd Packets": 905.0,
+        "min_seg_size_forward": 809.0,
+        "Bwd Packet Length Std": 770.0,
+        "Bwd IAT Min": 670.0,
+        "Fwd Packets/s": 642.0,
+        "Total Fwd Packets": 606.0,
+        "Packet Length Std": 587.0,
+        "Fwd IAT Std": 533.0,
+        "Flow IAT Mean": 531.0,
+        "Active Mean": 504.0
       },
-      "timestamp": "2026-05-04T14:42:44.864462"
+      "timestamp": "2026-05-04T19:18:06.424076"
     },
     {
       "model_name": "Neural Network",
       "model_key": "neural_network",
       "task": "multiclass",
-      "accuracy": 0.9905077262693157,
-      "precision_macro": 0.9530272566478094,
-      "recall_macro": 0.9870411301934808,
-      "f1_macro": 0.9687845962361202,
+      "accuracy": 0.987325,
+      "precision_macro": 0.713485211404552,
+      "recall_macro": 0.9791702894593509,
+      "f1_macro": 0.7605801834271908,
       "roc_auc": null,
-      "training_time_seconds": 32.77,
+      "training_time_seconds": 121.97,
       "hyperparams": {
         "hidden_layer_sizes": "(128,64)",
         "max_iter": 200,
@@ -620,201 +620,201 @@
       },
       "confusion_matrix": [
         [
-          6530,
-          35,
-          16,
-          5,
-          54,
-          27
-        ],
-        [
-          2,
-          6656,
-          0,
-          6,
-          0,
-          3
-        ],
-        [
-          2,
-          5,
-          6659,
-          0,
-          0,
-          1
-        ],
-        [
+          32752,
+          182,
+          39,
           4,
-          6,
-          0,
-          1783,
-          0,
-          37
+          146,
+          124
         ],
         [
-          3,
+          5,
+          5098,
           0,
           0,
           0,
-          387,
           0
         ],
         [
-          4,
+          2,
+          0,
+          1438,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          143,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          29,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
           1,
           0,
-          4,
-          0,
-          420
+          33
         ]
       ],
-      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.98      0.99      6667\n           1       0.99      1.00      1.00      6667\n           2       1.00      1.00      1.00      6667\n           3       0.99      0.97      0.98      1830\n           4       0.88      0.99      0.93       390\n           5       0.86      0.98      0.92       429\n\n    accuracy                           0.99     22650\n   macro avg       0.95      0.99      0.97     22650\nweighted avg       0.99      0.99      0.99     22650\n",
+      "classification_report": "              precision    recall  f1-score   support\n\n           0       1.00      0.99      0.99     33247\n           1       0.97      1.00      0.98      5103\n           2       0.97      1.00      0.99      1440\n           3       0.97      0.99      0.98       145\n           4       0.17      0.94      0.28        31\n           5       0.21      0.97      0.35        34\n\n    accuracy                           0.99     40000\n   macro avg       0.71      0.98      0.76     40000\nweighted avg       0.99      0.99      0.99     40000\n",
       "feature_importances_top20": null,
-      "timestamp": "2026-05-04T14:43:23.763593"
+      "timestamp": "2026-05-04T19:20:15.572685"
     },
     {
       "model_name": "Soft Voting Ensemble",
       "model_key": "soft_voting",
       "task": "multiclass",
-      "accuracy": 0.9975717439293599,
-      "precision_macro": 0.9889935866896008,
-      "recall_macro": 0.9956005055225096,
-      "f1_macro": 0.9921813852303482,
+      "accuracy": 0.996725,
+      "precision_macro": 0.8790365994319953,
+      "recall_macro": 0.9918531285938349,
+      "f1_macro": 0.9040984587255744,
       "roc_auc": null,
-      "training_time_seconds": 77.25,
+      "training_time_seconds": 1049.67,
       "hyperparams": {},
       "confusion_matrix": [
         [
-          6627,
-          11,
+          33124,
+          30,
+          20,
+          1,
+          72,
+          0
+        ],
+        [
           3,
+          5100,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
           2,
-          24,
+          0,
+          1438,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          143,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          31,
           0
         ],
         [
           1,
-          6666,
           0,
           0,
           0,
-          0
-        ],
-        [
           0,
-          5,
-          6661,
-          0,
-          0,
-          1
-        ],
-        [
-          0,
-          0,
-          0,
-          1830,
-          0,
-          0
-        ],
-        [
-          3,
-          0,
-          0,
-          0,
-          387,
-          0
-        ],
-        [
-          4,
-          1,
-          0,
-          0,
-          0,
-          424
+          33
         ]
       ],
       "classification_report": "",
       "feature_importances_top20": null,
-      "timestamp": "2026-05-04T15:18:27.519029"
+      "timestamp": "2026-05-04T21:04:04.701839"
     },
     {
       "model_name": "Stacking Ensemble",
       "model_key": "stacking",
       "task": "multiclass",
-      "accuracy": 0.9984988962472406,
-      "precision_macro": 0.9951540980181885,
-      "recall_macro": 0.996125479273822,
-      "f1_macro": 0.9956263462553191,
+      "accuracy": 0.99795,
+      "precision_macro": 0.9163957810313869,
+      "recall_macro": 0.9867274336891931,
+      "f1_macro": 0.94012067970941,
       "roc_auc": null,
-      "training_time_seconds": 2020.61,
+      "training_time_seconds": 5171.84,
       "hyperparams": {},
       "confusion_matrix": [
         [
-          6648,
-          6,
-          3,
-          1,
-          9,
-          0
-        ],
-        [
-          1,
-          6666,
+          33174,
+          25,
+          20,
           0,
-          0,
-          0,
-          0
-        ],
-        [
-          0,
-          5,
-          6661,
-          0,
-          0,
-          1
-        ],
-        [
-          0,
-          0,
-          0,
-          1830,
-          0,
+          28,
           0
         ],
         [
           3,
+          5100,
           0,
           0,
           0,
-          387,
           0
         ],
         [
-          4,
+          2,
+          0,
+          1438,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          143,
+          0,
+          0
+        ],
+        [
           1,
           0,
           0,
           0,
-          424
+          30,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          33
         ]
       ],
       "classification_report": "",
       "feature_importances_top20": null,
-      "timestamp": "2026-05-04T15:18:27.663093"
+      "timestamp": "2026-05-04T21:04:04.849808"
     }
   ],
   "highlights": {
     "best_accuracy": {
       "model": "LightGBM",
-      "value": 0.9984988962472406
+      "value": 0.998125
     },
     "best_f1": {
-      "model": "Stacking Ensemble",
-      "value": 0.9956263462553191
+      "model": "LightGBM",
+      "value": 0.9430401504799532
     },
     "fastest_training": {
-      "model": "Decision Tree",
-      "seconds": 2.93
+      "model": "XGBoost",
+      "seconds": 12.65
     }
   }
 }

@@ -94,11 +94,13 @@ def preprocess(df: pd.DataFrame, task: str, use_smote: bool, sample_size) -> tup
                 f"sample_size={sample_size} is too small for {n_classes} classes. "
                 f"Minimum is {min_sample} ({min_per_class} per class)."
             )
-        per_class = sample_size // n_classes
+        total = len(y)
+        class_counts = y.value_counts()
         sampled_idx = []
         for cls in sorted(y.unique()):
             cls_idx = y[y == cls].index
-            n_take = max(min_per_class, min(len(cls_idx), per_class))
+            proportion = class_counts[cls] / total
+            n_take = max(min_per_class, min(len(cls_idx), round(sample_size * proportion)))
             sampled_idx.extend(
                 cls_idx.to_series().sample(n_take, random_state=42).index
             )
