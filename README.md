@@ -30,16 +30,18 @@ Results from a 200K stratified sample, multiclass task, with SMOTE oversampling:
 - **Features:** 78 numerical features per flow (packet lengths, IAT, flags, etc.)
 - **Encoding:** CSV files use `cp1252` (Windows-1252) encoding
 
-### Class Distribution
+### Class Distribution (after cleaning)
 
-| Class | Label | Approx. Records | Attack Category |
-|---|---|---|---|
-| Benign | 0 | 2,273,097 | Normal traffic |
-| DoS/DDoS | 1 | 380,688 | DoS Hulk, GoldenEye, slowloris, Slowhttptest, DDoS |
-| Reconnaissance | 2 | 158,930 | PortScan |
-| Brute Force | 3 | 13,835 | FTP-Patator, SSH-Patator |
-| Botnet | 4 | 1,966 | Bot |
-| Web Attack | 5 | 2,180 | SQLi, XSS, Brute Force |
+| Class | Label | Records | % of Total | Attack Category |
+|---|---|---|---|---|
+| Benign | 0 | 2,096,484 | 83.12% | Normal traffic |
+| DoS/DDoS | 1 | 321,764 | 12.76% | DoS Hulk, GoldenEye, slowloris, Slowhttptest, DDoS |
+| Reconnaissance | 2 | 90,819 | 3.60% | PortScan |
+| Brute Force | 3 | 9,152 | 0.36% | FTP-Patator, SSH-Patator |
+| Web Attack | 5 | 2,143 | 0.09% | SQLi, XSS, Brute Force |
+| Botnet | 4 | 1,953 | 0.08% | Bot |
+
+**Total after cleaning:** 2,522,315 records, 78 features, 6 classes.
 
 > **Dropped classes:** Heartbleed (11 records) and Infiltration (36 records) are excluded — insufficient samples for reliable stratified training.
 
@@ -78,9 +80,37 @@ streamlit run src/ui/app.py
 
 Open http://localhost:8501 in your browser.
 
+### CLI Training
+
+Train all models from the terminal without the Streamlit UI:
+
+```bash
+# All 6 base models, multiclass, 200K sample, with SMOTE (default)
+python train_all.py --task multiclass --sample 200000
+
+# Include ensemble training (Soft Voting + Stacking)
+python train_all.py --task multiclass --sample 200000 --ensemble
+
+# Specific models only, binary task, no SMOTE
+python train_all.py --models xgboost lightgbm --task binary --no-smote
+
+# Full analysis (ensemble + feature selection + learning curves)
+python train_all.py --all-analysis
+```
+
+### Thesis Data Export
+
+Generate a comprehensive JSON snapshot with all dataset statistics, preprocessing details, and model metrics:
+
+```bash
+python export_thesis_snapshot.py
+```
+
+Output: `outputs/thesis_run_snapshot.json`
+
 ---
 
-## Usage Guide
+## Usage Guide (Streamlit UI)
 
 1. **Dataset** — Load the CICIDS2017 CSV files; view class distribution and feature list
 2. **EDA** — Explore feature distributions by class, correlation heatmap, imbalance analysis
@@ -89,6 +119,7 @@ Open http://localhost:8501 in your browser.
 5. **Results** — View confusion matrix, ROC curve, feature importances, and classification report per model
 6. **Comparison** — Side-by-side metrics table and charts across all trained models
 7. **Export** — Generate a PDF report and download individual plots or `results.json`
+8. **Prediction** — Run predictions on new data using trained or pretrained models (CSV upload or manual input)
 
 Use the **sidebar** to set global settings (binary vs. multiclass, SMOTE on/off, sample size) before training.
 
@@ -100,22 +131,28 @@ Use the **sidebar** to set global settings (binary vs. multiclass, SMOTE on/off,
 cyber-risk-ml/
 ├── src/
 │   ├── data/
-│   │   ├── loader.py          # CSV → merged.parquet with caching
-│   │   ├── preprocess.py      # Label mapping, scaling, SMOTE, train/test split
-│   │   └── eda.py             # Class distribution, correlation, feature stats
+│   │   ├── loader.py              # CSV → merged.parquet with caching
+│   │   ├── preprocess.py          # Label mapping, scaling, SMOTE, train/test split
+│   │   └── eda.py                 # Class distribution, correlation, feature stats
 │   ├── models/
 │   │   ├── logistic_regression.py
 │   │   ├── decision_tree.py
 │   │   ├── random_forest.py
 │   │   ├── xgboost_model.py
-│   │   └── lightgbm_model.py  # Each exports get_model(), get_default_hyperparams(), get_hyperparam_schema()
+│   │   ├── lightgbm_model.py
+│   │   ├── neural_network.py      # Each exports get_model(), get_default_hyperparams(), get_hyperparam_schema()
+│   │   ├── ensemble.py            # Soft Voting + Stacking ensemble training
+│   │   └── pretrained_registry.py # Loader for pretrained_models/ registry
+│   ├── analysis/
+│   │   ├── feature_selection.py   # RF-based importance + LightGBM subset evaluation
+│   │   └── learning_curves.py     # Accuracy vs sample size curves
 │   ├── training/
-│   │   ├── trainer.py         # train_model(), load_results(), save_result()
-│   │   └── evaluator.py       # evaluate(), confusion matrix, ROC, feature importance plots
+│   │   ├── trainer.py             # train_model(), train_ensembles(), load_results()
+│   │   └── evaluator.py           # evaluate(), confusion matrix, ROC, feature importance plots
 │   ├── reporting/
-│   │   └── pdf_report.py      # ReportLab PDF generation (5 sections)
+│   │   └── pdf_report.py          # ReportLab PDF generation
 │   └── ui/
-│       ├── app.py             # Streamlit entry point + sidebar global settings
+│       ├── app.py                 # Streamlit entry point + sidebar global settings
 │       └── pages/
 │           ├── 1_Dataset.py
 │           ├── 2_EDA.py
@@ -123,15 +160,25 @@ cyber-risk-ml/
 │           ├── 4_Training.py
 │           ├── 5_Results.py
 │           ├── 6_Comparison.py
-│           └── 7_Export.py
+│           ├── 7_Export.py
+│           └── 8_Prediction.py    # Run predictions on new data
+├── pretrained_models/             # Pretrained model packages for inference
+│   ├── registry.json
+│   ├── feature_names.json
+│   └── *.pkl
 ├── data/
-│   └── raw/                   # Place CICIDS2017 CSV files here
-├── models/                    # Saved .pkl model files and scaler.pkl
+│   └── raw/                       # Place CICIDS2017 CSV files here
+├── models/                        # Saved .pkl model files and scaler.pkl
 ├── outputs/
-│   ├── plots/                 # Generated PNG plots
-│   └── reports/               # Generated PDF reports
+│   ├── plots/                     # Generated PNG plots
+│   ├── reports/                   # Generated PDF reports
+│   ├── results.json               # All training run metrics (append-only)
+│   └── thesis_run_snapshot.json   # Thesis-ready data export
+├── tests/                         # Unit tests (pytest)
 ├── config/
-│   └── last_run.json          # Saved UI configuration
+│   └── last_run.json              # Saved UI configuration
+├── train_all.py                   # CLI training entry point
+├── export_thesis_snapshot.py      # Thesis data JSON exporter
 ├── requirements.txt
 ├── run.sh
 └── README.md
@@ -148,7 +195,17 @@ cyber-risk-ml/
 | `outputs/plots/*.png` | Confusion matrices, ROC curves, feature importance, EDA, comparison charts | PNG (150 dpi) |
 | `outputs/reports/*.pdf` | Full analysis report with all sections and figures | PDF (A4) |
 | `outputs/results.json` | All training run metadata and metrics | JSON array |
+| `outputs/thesis_run_snapshot.json` | Comprehensive thesis data export (dataset stats, preprocessing, all model metrics) | JSON |
 | `config/last_run.json` | Last saved UI hyperparameter configuration | JSON |
+
+---
+
+## Tests
+
+```bash
+python -m pytest              # Run all tests
+python -m pytest tests/ -v    # Verbose output
+```
 
 ---
 
