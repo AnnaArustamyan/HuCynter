@@ -176,6 +176,9 @@ if __name__ == "__main__":
                 )
                 ens_rows = []
                 for key, er in ens_results.items():
+                    model_obj = er.pop("_model", None)
+                    if model_obj is not None:
+                        joblib.dump(model_obj, models_dir / f"{key}_{args.task}.pkl")
                     save_result({**er, "task": args.task, "model_key": key,
                                  "hyperparams": {}, "use_smote": use_smote,
                                  "sample_size": args.sample,

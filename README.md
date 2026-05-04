@@ -1,19 +1,24 @@
 # Cyber Risk Detection using Machine Learning
 ## Yerevan State University — Diploma Project 2025
 
-This project implements a full ML pipeline for network intrusion detection using the CICIDS2017 dataset. It trains and compares five classifiers (Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM) on labeled network flow records, supporting both binary (benign vs. attack) and multiclass (6-class) tasks. A Streamlit web interface provides end-to-end interaction: dataset loading, exploratory analysis, model configuration, training with live progress, results visualization, and PDF report export.
+This project implements a full ML pipeline for network intrusion detection using the CICIDS2017 dataset. It trains and compares six classifiers and two ensemble methods on labeled network flow records, supporting both binary (benign vs. attack) and multiclass (6-class) tasks. A Streamlit web interface provides end-to-end interaction: dataset loading, exploratory analysis, model configuration, training with live progress, results visualization, prediction on new data, and PDF report export.
 
 ---
 
-## Models
+## Models & Results
 
-| Model | Type | Key Strength | Expected F1 (multiclass) | Training Speed |
-|---|---|---|---|---|
-| Logistic Regression | Linear | Fast, interpretable baseline | ~0.82 | Very fast (< 30s) |
-| Decision Tree | Tree | Highly interpretable, no scaling needed | ~0.92 | Fast (< 10s) |
-| Random Forest | Ensemble | Robust, strong feature importances | ~0.97 | Medium (1–5 min) |
-| XGBoost | Gradient Boosting | High accuracy, handles imbalance well | ~0.98 | Medium (1–3 min) |
-| LightGBM | Gradient Boosting | Fastest boosting, low memory usage | ~0.98 | Fast (30s–2 min) |
+Results from a 200K stratified sample, multiclass task, with SMOTE oversampling:
+
+| Model | Type | Accuracy | Precision | Recall | F1 (macro) | Training Time |
+|---|---|---|---|---|---|---|
+| Logistic Regression | Linear | 0.9569 | 0.8542 | 0.9666 | 0.8938 | 22.6s |
+| Decision Tree | Tree | 0.9921 | 0.9789 | 0.9929 | 0.9856 | 2.9s |
+| Random Forest | Ensemble | 0.9964 | 0.9817 | 0.9941 | 0.9876 | 3.9s |
+| XGBoost | Gradient Boosting | 0.9983 | 0.9931 | 0.9968 | 0.9949 | 3.7s |
+| **LightGBM** | Gradient Boosting | **0.9985** | 0.9940 | 0.9965 | 0.9952 | 11.5s |
+| Neural Network | MLP | 0.9905 | 0.9530 | 0.9870 | 0.9688 | 32.8s |
+| Soft Voting Ensemble | Ensemble (voting) | 0.9976 | 0.9890 | 0.9956 | 0.9922 | 77.2s |
+| **Stacking Ensemble** | Ensemble (stacking) | **0.9985** | **0.9952** | 0.9961 | **0.9956** | 2020.6s |
 
 ---
 
